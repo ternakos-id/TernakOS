@@ -6,11 +6,13 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') { res.status(405).json({error: 'Method not allowed'}); return; }
   try {
     const { messages } = req.body;
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) { res.status(500).json({error: 'API key not configured'}); return; }
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer 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'
+        'Authorization': 'Bearer ' + apiKey
       },
       body: JSON.stringify({ model: 'gpt-4o-mini', max_tokens: 500, messages })
     });
